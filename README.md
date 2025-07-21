@@ -7,18 +7,9 @@
 </h1>
 
 
-<div style="
-  background: linear-gradient(90deg, #ffe0b2, #fff176); 
-  color: #333; 
-  font-weight: bold; 
-  padding: 1rem 1.5rem; 
-  border-radius: 12px; 
-  margin: 1rem 0; 
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
-  font-size: 1.05rem;
-">
-  🔬 <strong>We are actively developing an enhanced version of ArtiMuse with reasoning capabilities — <em>ArtiMuse-R1</em>.</strong> Stay tuned for exciting updates and improvements!
-</div>
+> 🔬 **We are actively developing an enhanced version of ArtiMuse with reasoning capabilities — _ArtiMuse-R1_.**  
+> 🌟 Stay tuned for exciting updates and improvements!
+
 
 
 
