@@ -1,19 +1,23 @@
+<h1>
+  <span style="color: #FF3E3E;">A</span><span style="color: #FF914D;">r</span><span 
+  style="color: #FFC94D;">t</span><span style="color: #B6E24D;">i</span><span
+  style="color: #4DDC95;">M</span><span style="color: #4DB8FF;">u</span><span
+  style="color: #8564FF;">s</span><span style="color: #C74DFF;">e</span>:
+  Fine-Grained Image Aesthetics Assessment with Joint Scoring and Expert-Level Understanding
+</h1>
 
 
-# ArtiMuse: Fine-Grained Image Aesthetics Assessment with Joint Scoring and Expert-Level Understanding
+> 🔬 **We are actively developing an enhanced version of ArtiMuse with reasoning capabilities — _ArtiMuse-R1_. Stay tuned for exciting updates and improvements!**
 
-> ⚠️ **We are actively developing an enhanced version of ArtiMuse with reasoning capabilities — _ArtiMuse-R1_. Stay tuned for exciting updates and improvements!**
+**Shuo Cao**, **Nan Ma**, **Jiayang Li**, **Xiaohui Li**, **Lihao Shao**, **Kaiwen Zhu**, **Yu Zhou**, **Yuandong Pu**, **Jiarui Wu**, **Jiaquan Wang**, **Bo Qu**, **Wenhai Wang**, **Yu Qiao**, **Dajuin Yao†**, **Yihao Liu†**
 
+† Corresponding Authors
 
-Shuo Cao, Nan Ma, Jiayang Li, Xiaohui Li, Lihao Shao, Kaiwen Zhu, Yu Zhou, Yuandong Pu, Jiarui Wu, Jiaquan Wang, Bo Qu, Wenhai Wang, Yu Qiao, Dajuin Yao†, Yihao Liu†
-
-<sup>†</sup> Corresponding Authors
-
-
-## [📄 Paper]() | [🌐 Project Page](https://thunderbolt215.github.io/ArtiMuse-project/) | [📁 Dataset (ArtiMuse-10K)]()
+## [📄 **Paper**](#) | [🌐 **Project Page**](https://thunderbolt215.github.io/ArtiMuse-project/) | [📁 **Dataset**](#)
 
 
 ![Teaser](images/Teaser_v4.jpg "Teaser Figure")
+
 
 ---
 
@@ -25,8 +29,6 @@ Shuo Cao, Nan Ma, Jiayang Li, Xiaohui Li, Lihao Shao, Kaiwen Zhu, Yu Zhou, Yuand
 ---
 
 ## 🔍 Abstract
-
-
 
 The rapid advancement of educational applications, artistic creation, and AI-generated content (AIGC) technologies has substantially increased practical requirements for comprehensive Image Aesthetics Assessment (IAA), particularly demanding methods capable of delivering both quantitative scoring and professional understanding.  
  
@@ -51,7 +53,7 @@ Our work is built upon the [InternVL-3](https://github.com/OpenGVLab/InternVL) m
 
 ---
 
-## 📌 Citation
+## ✒️ Citation
 
 If you find this work useful, please consider citing:
 
