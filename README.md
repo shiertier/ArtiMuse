@@ -19,14 +19,11 @@
 ![Teaser](images/Teaser_v4.jpg "Teaser Figure")
 
 
----
-
 ## 📰 News & Updates
 
 - 🚀 **July 21, 2025**  
   The **Paper**, **Repository** and **Project Page** are now live!
 
----
 
 ## 🔍 Abstract
 
@@ -36,7 +33,6 @@ In this paper, we present:
 **(1) ArtiMuse**, an innovative MLLM-based IAA model with Joint Scoring and Expert-Level Understanding capabilities;  
 **(2) ArtiMuse-10K**, the first expert-curated image aesthetic dataset comprising 10,000 images spanning 5 main categories and 15 subcategories, each annotated by professional experts with 8-dimensional attributes analysis and a holistic score.  
 
----
 
 ## ✅ TODO
 
@@ -45,13 +41,11 @@ In this paper, we present:
 * [ ] Training and evaluation code for ArtiMuse
 * [ ] 🧠 ArtiMuse-R1 (reasoning-enabled version)
 
----
 
 ## 🙏 Acknowledgements
 
 Our work is built upon the [InternVL-3](https://github.com/OpenGVLab/InternVL) model as the base foundation. We also refer to the implementation of [Q-Align](https://github.com/Q-Future/Q-Align) during development. We sincerely thank the authors of both projects for their excellent contributions to the community.
 
----
 
 ## ✒️ Citation
 
