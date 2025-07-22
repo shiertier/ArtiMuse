@@ -56,5 +56,13 @@ Our work is built upon the [InternVL-3](https://github.com/OpenGVLab/InternVL) m
 If you find this work useful, please consider citing:
 
 ```bibtex
-
+@misc{cao2025artimusefinegrainedimageaesthetics,
+      title={ArtiMuse: Fine-Grained Image Aesthetics Assessment with Joint Scoring and Expert-Level Understanding}, 
+      author={Shuo Cao and Nan Ma and Jiayang Li and Xiaohui Li and Lihao Shao and Kaiwen Zhu and Yu Zhou and Yuandong Pu and Jiarui Wu and Jiaquan Wang and Bo Qu and Wenhai Wang and Yu Qiao and Dajuin Yao and Yihao Liu},
+      year={2025},
+      eprint={2507.14533},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2507.14533}, 
+}
 ```
