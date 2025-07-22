@@ -17,7 +17,7 @@
 
 † Corresponding Authors
 
-## [📄 **Paper**](#) | [🌐 **Project Page**](https://thunderbolt215.github.io/ArtiMuse-project/) | [📁 **Dataset**](#)
+## [📄 **Paper**](https://arxiv.org/abs/2507.14533) | [🌐 **Project Page**](https://thunderbolt215.github.io/ArtiMuse-project/) | [📁 **Dataset**](#)
 
 
 ![Teaser](images/Teaser_v4.jpg "Teaser Figure")
