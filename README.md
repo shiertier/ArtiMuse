@@ -10,7 +10,7 @@
 
 [👉 Try the Online Demo Now](http://artimuse.intern-ai.org.cn/)
 
-![Online Demo QR Code](assets/QRcode.jpg)
+![Online Demo QR Code](imagesimagesimages/QRcode.jpg)
 
 
 > 🔬 **We are actively developing an enhanced version of ArtiMuse with reasoning capabilities — _ArtiMuse-R1_.**  
