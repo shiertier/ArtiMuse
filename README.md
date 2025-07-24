@@ -25,6 +25,9 @@
 
 ## 📰 News & Updates
 
+- 🚀 **July 24, 2025**  
+  The **Online Demo** is now open for public access!
+
 - 🚀 **July 21, 2025**  
   The **Paper**, **Repository** and **Project Page** are now live!
 
