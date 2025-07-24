@@ -6,8 +6,6 @@
   Fine-Grained Image Aesthetics Assessment with Joint Scoring and Expert-Level Understanding
 </h1>
 
-## 🌐 Online Demo
-
 [👉 Try the Online Demo Now](http://artimuse.intern-ai.org.cn/)
 
 ![Online Demo QR Code](images/QRcode.jpg)
