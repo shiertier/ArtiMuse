@@ -8,11 +8,9 @@
 
 ## 🌐 Online Demo
 
----
-
 [👉 Try the Online Demo Now](http://artimuse.intern-ai.org.cn/)
 
-![Online Demo QR Code](assets/artimuse/online_demo/code.jpg)
+![Online Demo QR Code](assets/QRcode.jpg)
 
 
 > 🔬 **We are actively developing an enhanced version of ArtiMuse with reasoning capabilities — _ArtiMuse-R1_.**  
