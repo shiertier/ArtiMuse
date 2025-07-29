@@ -34,6 +34,9 @@
 
 ## 📰 News & Updates
 
+- 🚀 **July 28, 2025**  
+  **ArtiMuse** was officially released at **WAIC 2025**, in the forum _"Evolving with AI: The Iteration and Resilience of Artistic Creativity"_
+
 - 🚀 **July 24, 2025**  
   The **Online Demo** is now open for public access!
 
