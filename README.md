@@ -1,14 +1,17 @@
-<h1>
+<h1 style="line-height: 1.4;">
   <span style="color: #FF3E3E;">A</span><span style="color: #FF914D;">r</span><span 
   style="color: #FFC94D;">t</span><span style="color: #B6E24D;">i</span><span
   style="color: #4DDC95;">M</span><span style="color: #4DB8FF;">u</span><span
   style="color: #8564FF;">s</span><span style="color: #C74DFF;">e</span>:
   Fine-Grained Image Aesthetics Assessment with Joint Scoring and Expert-Level Understanding
+  <br>
+  <span style="font-size: 20px; color: #666;">书生 · 妙析多模态美学理解大模型</span>
 </h1>
 
-<h2 style="margin-top: -10px; color: #666; font-weight: normal; font-size: 20px;">
+
+<!-- <h2 style="margin-top: -10px; color: #666; font-weight: normal; font-size: 20px;">
   书生 · 妙析多模态美学理解大模型
-</h2>
+</h2> -->
 
 [👉 Try the Online Demo Now](http://artimuse.intern-ai.org.cn/)
 
