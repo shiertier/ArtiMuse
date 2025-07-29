@@ -6,6 +6,10 @@
   Fine-Grained Image Aesthetics Assessment with Joint Scoring and Expert-Level Understanding
 </h1>
 
+<h2 style="margin-top: -10px; color: #666; font-weight: normal; font-size: 20px;">
+  书生 · 妙析多模态美学理解大模型
+</h2>
+
 [👉 Try the Online Demo Now](http://artimuse.intern-ai.org.cn/)
 
 ![Online Demo QR Code](images/QRcode.jpg)
