@@ -123,7 +123,7 @@ Run the following command to evaluate a single image:
 ```bash
 python src/eval/eval_image.py \
     --model_name ArtiMuse \
-    --image_path example/test1.jpg \
+    --image_path example/test.jpg \
     --device cuda:0
 ```
 

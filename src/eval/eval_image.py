@@ -42,6 +42,60 @@ def load_image(image_file, input_size=448):
     transform = build_transform(input_size)
     return transform(image).unsqueeze(0)  
 
+def aesthetic_analysis(model, pixel_values, tokenizer, AESTHETIC_ATTRIBUTES, generation_config, device="cuda:0", mode="single"):
+    """
+    Evaluate aesthetic attributes of an image.
+
+    Args:
+        model: The model instance.
+        pixel_values: Input image tensor.
+        tokenizer: Tokenizer for text prompts.
+        AESTHETIC_ATTRIBUTES: List of attributes to evaluate.
+        generation_config: Generation configuration for the model.
+        device: Device to run inference on, default "cuda:0".
+        mode: "single" for per-attribute inference (default), 
+              "batch" for batch inference (faster, slight performance trade-off).
+
+    Returns:
+        dict: results["Aesthetic Attributes"] mapping each attribute to the model response.
+    """
+    results = {"Aesthetic Attributes": {}}
+
+    if mode == "single":
+        # Per-attribute inference (default, better performance)
+        for aspect in AESTHETIC_ATTRIBUTES:
+            prompt = f"Please evaluate the aesthetic quality of this image from the aspect of {aspect}."
+            response = model.chat(device, tokenizer, pixel_values, prompt, generation_config)
+            results["Aesthetic Attributes"][aspect] = response
+
+    elif mode == "batch":
+        # Batch inference (faster, slight performance trade-off)
+        num_aes_attribute = len(AESTHETIC_ATTRIBUTES)
+        num_patches_list = [pixel_values.size(0)] * num_aes_attribute
+        pixel_values_batch = torch.cat((pixel_values,) * num_aes_attribute, dim=0)
+
+        prompts = [
+            f"Please evaluate the aesthetic quality of this image from the aspect of {aspect}."
+            for aspect in AESTHETIC_ATTRIBUTES
+        ]
+
+        responses = model.batch_chat(
+            device,
+            tokenizer,
+            pixel_values_batch,
+            num_patches_list=num_patches_list,
+            questions=prompts,
+            generation_config=generation_config
+        )
+
+        for aspect, response in zip(AESTHETIC_ATTRIBUTES, responses):
+            results["Aesthetic Attributes"][aspect] = response
+
+    else:
+        raise ValueError(f"Invalid mode: {mode}. Choose 'single' or 'batch'.")
+
+    return results
+
 
 def main(args):
     # Setup paths
@@ -67,15 +121,38 @@ def main(args):
     pixel_values = load_image(args.image_path).to(torch.bfloat16).to(args.device)
 
     # Inference
+    # Aesthetic Score
     results = {}
     score = model.score(args.device, tokenizer, pixel_values, generation_config)
     results["Aesthetic Score"] = score
 
+    # Aesthetic Analysis
     results["Aesthetic Attributes"] = {}
     for aspect in AESTHETIC_ATTRIBUTES:
         prompt = f"Please evaluate the aesthetic quality of this image from the aspect of {aspect}."
         response = model.chat(args.device, tokenizer, pixel_values, prompt, generation_config)
         results["Aesthetic Attributes"][aspect] = response
+
+    #### For faster inference, you can use batch_chat (with a slight performance trade-off).
+
+    # results["Aesthetic Attributes"] = {}
+    # num_aes_attribute = len(AESTHETIC_ATTRIBUTES)
+    # num_patches_list = [pixel_values.size(0)] * num_aes_attribute
+    # pixel_values_batch = torch.cat((pixel_values,) * num_aes_attribute, dim=0)
+    # prompts = [
+    #     f"Please evaluate the aesthetic quality of this image from the aspect of {aspect}."
+    #     for aspect in AESTHETIC_ATTRIBUTES
+    # ]
+    # responses = model.batch_chat(
+    #     args.device,
+    #     tokenizer,
+    #     pixel_values_batch,
+    #     num_patches_list=num_patches_list,
+    #     questions=prompts,
+    #     generation_config=generation_config
+    # )
+    # for aspect, response in zip(AESTHETIC_ATTRIBUTES, responses):
+    #     results["Aesthetic Attributes"][aspect] = response
 
     # Save results
     image_name = os.path.splitext(os.path.basename(args.image_path))[0]

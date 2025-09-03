@@ -286,6 +286,7 @@ class InternVLChatModel(PreTrainedModel):
         return vit_embeds
 
     def batch_chat(self,
+                   device,
                    tokenizer,
                    pixel_values,
                    questions,
@@ -330,7 +331,7 @@ class InternVLChatModel(PreTrainedModel):
 
         tokenizer.padding_side = 'left'
         model_inputs = tokenizer(queries, return_tensors='pt', padding=True)
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         input_ids = model_inputs['input_ids'].to(device)
         attention_mask = model_inputs['attention_mask'].to(device)
         eos_token_id = tokenizer.convert_tokens_to_ids(template.sep.strip())
