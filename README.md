@@ -11,28 +11,36 @@
   书生 · 妙析多模态美学理解大模型
 </h1>
 
-[👉 Try the Online Demo Now](http://artimuse.intern-ai.org.cn/)
+<div align="center">
 
-![Online Demo QR Code](images/QRcode.jpg)
+\[[🌐 Project Page](https://thunderbolt215.github.io/ArtiMuse-project/)]
+\[[🖥️ Online Demo](http://artimuse.intern-ai.org.cn/)]
+\[[📄 Paper](https://arxiv.org/abs/2507.14533)] 
+\[[🧩 Checkpoints](https://modelscope.cn/collections/ArtiMuse-abea7a7922274d)]
+
+</div>
+
+![Online Demo QR Code](assets/images/QRcode.jpg)
 
 
 > 🔬 **We are actively developing an enhanced version of ArtiMuse with reasoning capabilities — _ArtiMuse-R1_.**  
 > 🌟 Stay tuned for exciting updates and improvements!
 
 
-
-
 **Shuo Cao**, **Nan Ma**, **Jiayang Li**, **Xiaohui Li**, **Lihao Shao**, **Kaiwen Zhu**, **Yu Zhou**, **Yuandong Pu**, **Jiarui Wu**, **Jiaquan Wang**, **Bo Qu**, **Wenhai Wang**, **Yu Qiao**, **Dajuin Yao†**, **Yihao Liu†**
+
+University of Science and Technology of China, Shanghai AI Laboratory, China Academy of Art, Peking University 
 
 † Corresponding Authors
 
-## [📄 **Paper**](https://arxiv.org/abs/2507.14533) | [🌐 **Project Page**](https://thunderbolt215.github.io/ArtiMuse-project/) | [📁 **Dataset**](#)
 
-
-![Teaser](images/Teaser_v4.jpg "Teaser Figure")
+![Teaser](assets/images/Teaser.jpg "Teaser Figure")
 
 
 ## 📰 News & Updates
+
+- 🚀 **Sep 3, 2025**  
+  The **Checkpoints** and **Evaluation Code** of ArtiMuse are now available! 🚀
 
 - 🚀 **July 28, 2025**  
   **ArtiMuse** was officially released at **WAIC 2025**, in the forum _"Evolving with AI: The Iteration and Resilience of Artistic Creativity"_
@@ -53,13 +61,127 @@ In this paper, we present:
 **(2) ArtiMuse-10K**, the first expert-curated image aesthetic dataset comprising 10,000 images spanning 5 main categories and 15 subcategories, each annotated by professional experts with 8-dimensional attributes analysis and a holistic score.  
 
 
-## ✅ TODO
+## 📦 Checkpoints
 
-* [ ] ArtiMuse-10K dataset
-* [ ] Checkpoints of ArtiMuse
-* [ ] Training and evaluation code for ArtiMuse
-* [ ] 🧠 ArtiMuse-R1 (reasoning-enabled version)
+All paper-version checkpoints share the same **text pretraining process**, but differ in their **score finetuning datasets**:
 
+| Checkpoint             | Score Finetuning Dataset | Download | Notes |
+|-------------------------|--------------------------|----------|-------|
+| `ArtiMuse`              | ArtiMuse-10K             | [🤖 ModelScope](https://modelscope.cn/models/thunderbolt/ArtiMuse) | **Paper Version (Recommended)** |
+| `ArtiMuse_AVA`          | AVA                      | [🤖 ModelScope](https://modelscope.cn/models/thunderbolt/ArtiMuse_AVA) | Paper Version |
+| `ArtiMuse_FLICKR-AES`   | FLICKR-AES               | [🤖 ModelScope](https://modelscope.cn/models/thunderbolt/ArtiMuse_FLICKR-AES) | Paper Version |
+| `ArtiMuse_PARA`         | PARA                     | [🤖 ModelScope](https://modelscope.cn/models/thunderbolt/ArtiMuse_PARA) | Paper Version |
+| `ArtiMuse_TAD66K`       | TAD66K                   | [🤖 ModelScope](https://modelscope.cn/models/thunderbolt/ArtiMuse_TAD66K) | Paper Version |
+| `ArtiMuse_OnlineDemo`   | ArtiMuse-10K & Internal Datasets  |  —   | Surpasses paper versions thanks to additional internal datasets and advanced training; also supports fine-grained attribute scores. For access, please contact us for business collaboration. |
+| `ArtiMuse-R1`           |    —       |  —  | Next-generation model trained with GRPO, supporting CoT reasoning, delivering more accurate score predictions, and extending beyond IAA to handle a wider range of tasks. |
+
+## ⚙️ Setup
+
+Clone this repository:
+
+```
+git clone https://github.com/thunderbolt215/ArtiMuse.git
+```
+Create a conda virtual environment and activate it: (please ensure that `Python>=3.9`).
+
+```
+conda create -n artimuse python=3.10
+conda activate artimuse
+```
+
+Install dependencies using `requirements.txt`:
+```
+pip install -r requirements.txt
+```
+We recommend to use FlashAttention for acceleration:
+```
+pip install flash-attn --no-build-isolation
+```
+
+## 📊 Evaluation
+
+### 1. Prepare Checkpoints
+
+Download the pretrained checkpoints and place them under the `checkpoints/` directory.
+The folder structure should look like:
+
+```
+ArtiMuse
+└── checkpoints/
+    ├── ArtiMuse
+    ├── ArtiMuse_AVA
+    ├── ArtiMuse_FLICKR-AES
+    ├── ...
+```
+
+---
+
+### 2. Evaluation on a Single Image
+
+Run the following command to evaluate a single image:
+
+```bash
+python src/eval/eval_image.py \
+    --model_name ArtiMuse \
+    --image_path example/test1.jpg \
+    --device cuda:0
+```
+
+* **Arguments**
+
+  * `--model_name`: Name of the checkpoint to use (e.g., `ArtiMuse`, `ArtiMuse_AVA`).
+  * `--image_path`: Path to the input image.
+  * `--device`: Inference device, e.g., `cuda:0`.
+
+* **Results**
+  are saved to:
+
+  ```
+  results/image_results/{input_image_name}_{model_name}_eval.json
+  ```
+
+---
+
+### 3. Evaluation on Benchmark Datasets
+
+Download the test datasets and organize them under `test_datasets/{dataset_name}/images/`.
+The expected structure is:
+
+```
+ArtiMuse
+└── test_datasets/
+    ├── AVA
+    │   ├── images/
+    │   └── test.json
+    ├── TAD66K
+    ├── FLICKR-AES
+    └── ...
+```
+
+* `images/`: contains the test images.
+* `test.json`: provides the ground-truth scores (`gt_score`) for evaluation.
+
+Run dataset-level evaluation with:
+
+```bash
+python src/eval/eval_dataset.py \
+    --model_name ArtiMuse_AVA \
+    --dataset AVA \
+    --device cuda:0
+```
+
+* **Arguments**
+
+  * `--model_name`: Name of the checkpoint to use (e.g., `ArtiMuse_AVA`).
+  * `--dataset`: Dataset name (e.g., `AVA`, `TAD66K`, `FLICKR-AES`).
+  * `--device`: Inference device.
+
+* **Results**
+   are saved to:
+
+  ```
+  results/dataset_results/{dataset}_{model_name}.json
+  ```
 
 ## 🙏 Acknowledgements
 
