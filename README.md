@@ -39,6 +39,9 @@ University of Science and Technology of China, Shanghai AI Laboratory, China Aca
 
 ## 📰 News & Updates
 
+- 🔗 **Sep 5, 2025**  
+  The online service of **ArtiMuse** has been integrated into the [**Dingo**](https://github.com/MigoXLab/dingo). See details: [Dingo_Docs_ArtiMuse](https://github.com/MigoXLab/dingo/blob/dev/docs/artimuse.md)
+
 - 🚀 **Sep 3, 2025**  
   The **Checkpoints** and **Evaluation Code** of ArtiMuse are now available! 🚀
 
@@ -67,11 +70,11 @@ All paper-version checkpoints share the same **text pretraining process**, but d
 
 | Checkpoint             | Score Finetuning Dataset | Download | Notes |
 |-------------------------|--------------------------|----------|-------|
-| `ArtiMuse`              | ArtiMuse-10K             | [🤗 HF link](https://huggingface.co/Thunderbolt215215/ArtiMuse)<br> [🤖 MS link](https://modelscope.cn/models/thunderbolt/ArtiMuse) | **Paper Version (Recommended)** |
-| `ArtiMuse_AVA`          | AVA                      | [🤗 HF link](https://huggingface.co/Thunderbolt215215/ArtiMuse_AVA)<br> [🤖 MS link](https://modelscope.cn/models/thunderbolt/ArtiMuse_AVA) | Paper Version |
-| `ArtiMuse_FLICKR-AES`   | FLICKR-AES               | [🤗 HF link](https://huggingface.co/Thunderbolt215215/ArtiMuse_FLICKR-AES)<br> [🤖 MS link](https://modelscope.cn/models/thunderbolt/ArtiMuse_FLICKR-AES) | Paper Version |
-| `ArtiMuse_PARA`         | PARA                     | [🤗 HF link](https://huggingface.co/Thunderbolt215215/ArtiMuse_PARA)<br> [🤖 MS link](https://modelscope.cn/models/thunderbolt/ArtiMuse_PARA) | Paper Version |
-| `ArtiMuse_TAD66K`       | TAD66K                   | [🤗 HF link](https://huggingface.co/Thunderbolt215215/ArtiMuse_TAD66K)<br> [🤖 MS link](https://modelscope.cn/models/thunderbolt/ArtiMuse_TAD66K) | Paper Version |
+| `ArtiMuse`              | ArtiMuse-10K             | [🤗HF link](https://huggingface.co/Thunderbolt215215/ArtiMuse)<br>[🤖MS link](https://modelscope.cn/models/thunderbolt/ArtiMuse) | **Paper Version (Recommended)** |
+| `ArtiMuse_AVA`          | AVA                      | [🤗HF link](https://huggingface.co/Thunderbolt215215/ArtiMuse_AVA)<br>[🤖MS link](https://modelscope.cn/models/thunderbolt/ArtiMuse_AVA) | Paper Version |
+| `ArtiMuse_FLICKR-AES`   | FLICKR-AES               | [🤗HF link](https://huggingface.co/Thunderbolt215215/ArtiMuse_FLICKR-AES)<br> [🤖MS link](https://modelscope.cn/models/thunderbolt/ArtiMuse_FLICKR-AES) | Paper Version |
+| `ArtiMuse_PARA`         | PARA                     | [🤗HF link](https://huggingface.co/Thunderbolt215215/ArtiMuse_PARA)<br> [🤖MS link](https://modelscope.cn/models/thunderbolt/ArtiMuse_PARA) | Paper Version |
+| `ArtiMuse_TAD66K`       | TAD66K                   | [🤗HF link](https://huggingface.co/Thunderbolt215215/ArtiMuse_TAD66K)<br> [🤖MS link](https://modelscope.cn/models/thunderbolt/ArtiMuse_TAD66K) | Paper Version |
 | `ArtiMuse_OnlineDemo`   | ArtiMuse-10K & Internal Datasets  |  —   | Surpasses paper versions thanks to additional internal datasets and advanced training; also supports fine-grained attribute scores. For access, please contact us for business collaboration. |
 | `ArtiMuse-R1`           |    —       |  —  | Next-generation model trained with GRPO, supporting CoT reasoning, delivering more accurate score predictions, and extending beyond IAA to handle a wider range of tasks. |
 
