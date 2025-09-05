@@ -15,10 +15,10 @@
 
 \[[🌐 Project Page](https://thunderbolt215.github.io/ArtiMuse-project/)]
 \[[🖥️ Online Demo](http://artimuse.intern-ai.org.cn/)]
-\[[📄 Paper](https://arxiv.org/abs/2507.14533)] 
-\[[🧩 Checkpoints](https://modelscope.cn/collections/ArtiMuse-abea7a7922274d)]
-
+\[[📄 Paper](https://arxiv.org/abs/2507.14533)]
+\[[🧩 Checkpoints: 🤗 [Hugging Face](https://huggingface.co/collections/Thunderbolt215215/artimuse-68b7d2c7137d8ed119c8774e) | 🤖 [ModelScope](https://modelscope.cn/collections/ArtiMuse-abea7a7922274d)]]
 </div>
+
 
 ![Online Demo QR Code](assets/images/QRcode.jpg)
 
@@ -67,11 +67,11 @@ All paper-version checkpoints share the same **text pretraining process**, but d
 
 | Checkpoint             | Score Finetuning Dataset | Download | Notes |
 |-------------------------|--------------------------|----------|-------|
-| `ArtiMuse`              | ArtiMuse-10K             | [🤖 ModelScope](https://modelscope.cn/models/thunderbolt/ArtiMuse) | **Paper Version (Recommended)** |
-| `ArtiMuse_AVA`          | AVA                      | [🤖 ModelScope](https://modelscope.cn/models/thunderbolt/ArtiMuse_AVA) | Paper Version |
-| `ArtiMuse_FLICKR-AES`   | FLICKR-AES               | [🤖 ModelScope](https://modelscope.cn/models/thunderbolt/ArtiMuse_FLICKR-AES) | Paper Version |
-| `ArtiMuse_PARA`         | PARA                     | [🤖 ModelScope](https://modelscope.cn/models/thunderbolt/ArtiMuse_PARA) | Paper Version |
-| `ArtiMuse_TAD66K`       | TAD66K                   | [🤖 ModelScope](https://modelscope.cn/models/thunderbolt/ArtiMuse_TAD66K) | Paper Version |
+| `ArtiMuse`              | ArtiMuse-10K             | [🤗 HF link](https://huggingface.co/Thunderbolt215215/ArtiMuse)<br> [🤖 MS link](https://modelscope.cn/models/thunderbolt/ArtiMuse) | **Paper Version (Recommended)** |
+| `ArtiMuse_AVA`          | AVA                      | [🤗 HF link](https://huggingface.co/Thunderbolt215215/ArtiMuse_AVA)<br> [🤖 MS link](https://modelscope.cn/models/thunderbolt/ArtiMuse_AVA) | Paper Version |
+| `ArtiMuse_FLICKR-AES`   | FLICKR-AES               | [🤗 HF link](https://huggingface.co/Thunderbolt215215/ArtiMuse_FLICKR-AES)<br> [🤖 MS link](https://modelscope.cn/models/thunderbolt/ArtiMuse_FLICKR-AES) | Paper Version |
+| `ArtiMuse_PARA`         | PARA                     | [🤗 HF link](https://huggingface.co/Thunderbolt215215/ArtiMuse_PARA)<br> [🤖 MS link](https://modelscope.cn/models/thunderbolt/ArtiMuse_PARA) | Paper Version |
+| `ArtiMuse_TAD66K`       | TAD66K                   | [🤗 HF link](https://huggingface.co/Thunderbolt215215/ArtiMuse_TAD66K)<br> [🤖 MS link](https://modelscope.cn/models/thunderbolt/ArtiMuse_TAD66K) | Paper Version |
 | `ArtiMuse_OnlineDemo`   | ArtiMuse-10K & Internal Datasets  |  —   | Surpasses paper versions thanks to additional internal datasets and advanced training; also supports fine-grained attribute scores. For access, please contact us for business collaboration. |
 | `ArtiMuse-R1`           |    —       |  —  | Next-generation model trained with GRPO, supporting CoT reasoning, delivering more accurate score predictions, and extending beyond IAA to handle a wider range of tasks. |
 
