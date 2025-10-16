@@ -213,14 +213,7 @@ def launch(server_name: str, server_port: int) -> None:
 
         # Bottom section: Comments table (centered and same width as top section)
         gr.Markdown("### Detailed Evaluation")
-        comments_table = gr.Dataframe(
-            headers=["Dimension", "Score", "Comment"],
-            datatype=["str", "str", "str"],
-            col_count=(3, "fixed"),
-            label="",
-            interactive=False,
-            elem_classes=["comments-section"]
-        )
+        comments_table = gr.HTML(value="", elem_classes=["comments-section"])
 
         # Connect inference button
         def _run_infer_wrapper(image):
@@ -228,13 +221,32 @@ def launch(server_name: str, server_port: int) -> None:
 
             # Prepare total score markdown
             total_score_md = f"""
-            <div class="total-score-box">
+            <div class=\"total-score-box\">
                 {total_score_text}
             </div>
             """
 
-            # Return: fig, total_score_md, comments_table
-            return [fig, total_score_md, comments_data]
+            # Build comments HTML table
+            rows = "".join(
+                f"<tr><td>{dim}</td><td>{score}</td><td>{comment}</td></tr>" for dim, score, comment in comments_data
+            )
+            comments_html = f"""
+            <table style=\"width:900px;margin:0 auto;border-collapse:collapse;\">
+                <thead>
+                    <tr style=\"text-align:left;border-bottom:1px solid #ddd;\">
+                        <th style=\"padding:8px;\">Dimension</th>
+                        <th style=\"padding:8px;\">Score</th>
+                        <th style=\"padding:8px;\">Comment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows}
+                </tbody>
+            </table>
+            """
+
+            # Return: fig, total_score_md, comments_html
+            return [fig, total_score_md, comments_html]
 
         run_btn.click(
             _run_infer_wrapper,
