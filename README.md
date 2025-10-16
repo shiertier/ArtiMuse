@@ -7,9 +7,9 @@
 </h1>
 
 
-<h1 style="margin-top: -10px; color: #666; font-weight: normal; font-size: 20px;">
+<!-- <h1 style="margin-top: -10px; color: #666; font-weight: normal; font-size: 20px;">
   书生 · 妙析多模态美学理解大模型
-</h1>
+</h1> -->
 
 <div align="center">
 
