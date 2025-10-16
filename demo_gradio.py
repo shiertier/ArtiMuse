@@ -148,7 +148,7 @@ def launch(server_name: str, server_port: int) -> None:
 
         run_btn.click(_run_infer, inputs=[image_in], outputs=[fig_out, score_out, comment_out])
 
-    demo.queue(concurrency_count=2).launch(server_name=server_name, server_port=server_port)
+    demo.queue(max_size=2).launch(server_name=server_name, server_port=server_port)
 
 
 if __name__ == "__main__":
