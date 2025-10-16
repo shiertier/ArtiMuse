@@ -183,6 +183,21 @@ python src/eval/eval_dataset.py \
   results/dataset_results/{dataset}_{model_name}.json
   ```
 
+## 🧪 Demos
+
+- Gradio UI (image upload + 7-dim radar chart + comments)
+  - Install extras: `pip install -r requirements_gradio.txt`
+  - Run: `python demo_gradio.py`
+
+- FastAPI Service (persistent model, HTTP inference)
+  - Install extras: `pip install -r requirements_api.txt`
+  - Run: `python demo_api.py`
+  - Endpoints: `GET /health`, `GET /meta`, `POST /infer` (form field `file`)
+
+Environment variables (optional):
+- `ARTIMUSE_CKPT` path to checkpoint (default `checkpoints/ArtiMuse`)
+- `ARTIMUSE_DEVICE` device string (default `cuda:0`)
+
 ## 🙏 Acknowledgements
 
 Our work is built upon the [InternVL-3](https://github.com/OpenGVLab/InternVL) model as the base foundation. We also refer to the implementation of [Q-Align](https://github.com/Q-Future/Q-Align) during development. We sincerely thank the authors of both projects for their excellent contributions to the community.
