@@ -219,7 +219,7 @@ def launch(server_name: str, server_port: int) -> None:
         with gr.Group():
             dimension_cards = []
             with gr.Row():
-                for i, dim in enumerate(AESTHETIC_DIMENSIONS):
+                for dim in AESTHETIC_DIMENSIONS:
                     with gr.Column(scale=1, min_width=150):
                         card = gr.Markdown(
                             value=f"""
@@ -239,7 +239,6 @@ def launch(server_name: str, server_port: int) -> None:
             label="",
             interactive=False,
             wrap=True,
-            max_rows=7,
         )
 
         # Connect inference button
