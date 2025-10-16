@@ -107,24 +107,23 @@ def _figure_to_pil(fig: plt.Figure) -> Image.Image:
 SERVER = ModelServer(ckpt_dir=DEFAULT_CHECKPOINT, device=DEFAULT_DEVICE)
 
 
-def _run_infer(image: Image.Image) -> Tuple[Image.Image, str, List[List[str]]]:
-    """Gradio handler: return radar chart (as image), total score, and per-dimension comments table."""
+def _run_infer(image: Image.Image) -> Tuple[plt.Figure, str, List[List[str]]]:
+    """Gradio handler: return radar chart (Matplotlib Figure), total score, and per-dimension comments data."""
     if image is None:
         raise ValueError("No image provided.")
 
     aspect_scores, total_score, aspect_comments = SERVER.score_and_comment(image)
     fig = _radar_figure(aspect_scores)
-    chart_img = _figure_to_pil(fig)
 
     # Total score text (centered, large)
     total_score_text = f"Total Score: {total_score:.1f}/100"
 
-    # Comments table: each row is [dimension, score, comment]
+    # Comments data: each row is [dimension, score, comment]
     comments_table: List[List[str]] = []
     for k in AESTHETIC_DIMENSIONS:
         comments_table.append([k, f"{aspect_scores[k]:.1f}", aspect_comments[k]])
 
-    return chart_img, total_score_text, comments_table
+    return fig, total_score_text, comments_table
 
 
 def launch(server_name: str, server_port: int) -> None:
@@ -205,15 +204,22 @@ def launch(server_name: str, server_port: int) -> None:
             # Right: Chart and Total Score
             with gr.Column(scale=0, min_width=450, elem_classes=["chart-column"]):
                 gr.Markdown("### Aesthetic Evaluation")
-                fig_out = gr.Image(type="pil", label="", show_label=False, height=450)
+                fig_out = gr.Plot(label="", show_label=False)
                 total_score_out = gr.Markdown(
                     value="Total Score: --/100",
                     elem_classes=["total-score-box"]
                 )
 
-        # Bottom section: Comments table (centered and same width as top section)
-        gr.Markdown("### Detailed Evaluation")
-        comments_table = gr.HTML(value="", elem_classes=["comments-section"])
+        # Bottom section: Comments (centered and same width as top section)
+        gr.Markdown("### Comments")
+        with gr.Column(elem_classes=["comments-section"]):
+            comment_md_1 = gr.Markdown()
+            comment_md_2 = gr.Markdown()
+            comment_md_3 = gr.Markdown()
+            comment_md_4 = gr.Markdown()
+            comment_md_5 = gr.Markdown()
+            comment_md_6 = gr.Markdown()
+            comment_md_7 = gr.Markdown()
 
         # Connect inference button
         def _run_infer_wrapper(image):
@@ -221,37 +227,36 @@ def launch(server_name: str, server_port: int) -> None:
 
             # Prepare total score markdown
             total_score_md = f"""
-            <div class=\"total-score-box\">
-                {total_score_text}
-            </div>
+            <div class=\"total-score-box\">{total_score_text}</div>
             """
 
-            # Build comments HTML table
-            rows = "".join(
-                f"<tr><td>{dim}</td><td>{score}</td><td>{comment}</td></tr>" for dim, score, comment in comments_data
-            )
-            comments_html = f"""
-            <table style=\"width:900px;margin:0 auto;border-collapse:collapse;\">
-                <thead>
-                    <tr style=\"text-align:left;border-bottom:1px solid #ddd;\">
-                        <th style=\"padding:8px;\">Dimension</th>
-                        <th style=\"padding:8px;\">Score</th>
-                        <th style=\"padding:8px;\">Comment</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows}
-                </tbody>
-            </table>
-            """
+            # Build 7 separate markdown blocks with title, score, and multi-line comment
+            comment_blocks: List[str] = []
+            for dim, score, comment in comments_data:
+                block = f"#### {dim}（{score}/100）\n\n<div style='white-space: pre-wrap;'>{comment}</div>"
+                comment_blocks.append(block)
 
-            # Return: fig, total_score_md, comments_html
-            return [fig, total_score_md, comments_html]
+            # Ensure exactly 7 outputs (pad if necessary)
+            while len(comment_blocks) < 7:
+                comment_blocks.append("")
+
+            # Return: fig, total_score_md, and 7 comment markdowns
+            return [fig, total_score_md] + comment_blocks[:7]
 
         run_btn.click(
             _run_infer_wrapper,
             inputs=[image_in],
-            outputs=[fig_out, total_score_out, comments_table]
+            outputs=[
+                fig_out,
+                total_score_out,
+                comment_md_1,
+                comment_md_2,
+                comment_md_3,
+                comment_md_4,
+                comment_md_5,
+                comment_md_6,
+                comment_md_7,
+            ],
         )
 
     demo.queue(max_size=2).launch(server_name=server_name, server_port=server_port)
