@@ -204,7 +204,6 @@ def launch(server_name: str, server_port: int) -> None:
             headers=["Dimension", "Score", "Comment"],
             label="",
             interactive=False,
-            wrap=True,
             elem_classes=["comments-section"]
         )
 
