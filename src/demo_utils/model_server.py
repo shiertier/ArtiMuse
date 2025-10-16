@@ -22,9 +22,9 @@ from PIL import Image
 from torchvision.transforms.functional import InterpolationMode
 from transformers import AutoTokenizer
 
-from src.artimuse.internvl.model.internvl_chat.aes_tokens import AESTHETICS_TOKEN_LIST
-from src.artimuse.internvl.model.internvl_chat.modeling_artimuse import InternVLChatModel
-from src.artimuse.internvl.conversation import get_conv_template
+from artimuse.internvl.model.internvl_chat.aes_tokens import AESTHETICS_TOKEN_LIST
+from artimuse.internvl.model.internvl_chat.modeling_artimuse import InternVLChatModel
+from artimuse.internvl.conversation import get_conv_template
 
 
 # ------------------------ Constants ------------------------

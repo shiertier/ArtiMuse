@@ -17,13 +17,14 @@ from __future__ import annotations
 import os
 import logging
 from typing import Dict, List, Tuple
+import argparse
 
 import gradio as gr
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
-from src.demo_utils.model_server import (
+from demo_utils.model_server import (
     ModelServer,
     AESTHETIC_DIMENSIONS,
 )
@@ -39,7 +40,7 @@ LOGGER = logging.getLogger("demo_gradio")
 
 
 # Import solely to declare dependency for packagers
-from src.demo_utils.model_server import to_model_tensor  # noqa: F401
+from demo_utils.model_server import to_model_tensor  # noqa: F401
 
 
 # ------------------------ Visualization: Radar Chart ------------------------
@@ -109,7 +110,7 @@ def _run_infer(image: Image.Image) -> Tuple[plt.Figure, str, str]:
     return fig, score_text, comment_text
 
 
-def launch() -> None:
+def launch(server_name: str, server_port: int) -> None:
     """Launch Gradio UI."""
     css = """
     .gradio-container {max-width: 1200px}
@@ -147,8 +148,12 @@ def launch() -> None:
 
         run_btn.click(_run_infer, inputs=[image_in], outputs=[fig_out, score_out, comment_out])
 
-    demo.queue(concurrency_count=2).launch()
+    demo.queue(concurrency_count=2).launch(server_name=server_name, server_port=server_port)
 
 
 if __name__ == "__main__":
-    launch()
+    parser = argparse.ArgumentParser(description="Run ArtiMuse Gradio demo UI")
+    parser.add_argument("--host", "--listen", dest="host", default=os.environ.get("HOST", "0.0.0.0"), help="Host/IP to bind")
+    parser.add_argument("--port", dest="port", type=int, default=int(os.environ.get("PORT", 7860)), help="Port to bind")
+    args = parser.parse_args()
+    launch(args.host, args.port)

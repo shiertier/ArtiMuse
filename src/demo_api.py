@@ -16,12 +16,13 @@ import io
 import os
 import logging
 from typing import Dict, List
+import argparse
 import uvicorn
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 from PIL import Image
 
-from src.demo_utils.model_server import (
+from demo_utils.model_server import (
     ModelServer,
     AESTHETIC_DIMENSIONS,
 )
@@ -75,8 +76,13 @@ def infer(file: UploadFile = File(...)) -> JSONResponse:
 
 
 def main() -> None:
-    """Launch Uvicorn service."""
-    uvicorn.run(APP, host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
+    """Launch Uvicorn service with configurable host/port."""
+    parser = argparse.ArgumentParser(description="Run ArtiMuse FastAPI demo server")
+    parser.add_argument("--host", "--listen", dest="host", default=os.environ.get("HOST", "0.0.0.0"), help="Host/IP to bind")
+    parser.add_argument("--port", dest="port", type=int, default=int(os.environ.get("PORT", 8000)), help="Port to bind")
+    args = parser.parse_args()
+
+    uvicorn.run(APP, host=args.host, port=args.port)
 
 
 if __name__ == "__main__":
