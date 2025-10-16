@@ -1,14 +1,14 @@
 """
 Shared model server for ArtiMuse demos.
 
-职责：
-- 常驻加载 ArtiMuse 模型与分词器
-- 统一提供 7 维度打分、总分与评语
-- 暴露最小且稳定的接口，供 Gradio / API 复用
+Responsibilities:
+- Persistently load ArtiMuse model and tokenizer
+- Provide unified 7-dimension scores, total score and comments
+- Expose a minimal, stable interface for Gradio/API reuse
 
-注意：
-- 日志使用英文；注释使用中文
-- 禁止函数内 import；不添加多余的异常分支
+Notes:
+- Logging is English; comments are English
+- No in-function imports; no extra exception branches
 """
 
 from __future__ import annotations
@@ -27,7 +27,7 @@ from src.artimuse.internvl.model.internvl_chat.modeling_artimuse import InternVL
 from src.artimuse.internvl.conversation import get_conv_template
 
 
-# ------------------------ 常量 ------------------------
+# ------------------------ Constants ------------------------
 
 AESTHETIC_DIMENSIONS: List[str] = [
     "Composition & Design",
@@ -45,10 +45,10 @@ IMAGENET_STD: Tuple[float, float, float] = (0.229, 0.224, 0.225)
 LOGGER = logging.getLogger("artimuse.model_server")
 
 
-# ------------------------ 预处理 ------------------------
+# ------------------------ Preprocessing ------------------------
 
 def build_transform(input_size: int = 448) -> T.Compose:
-    """构建图像预处理流水线。"""
+    """Build the image preprocessing pipeline."""
     return T.Compose(
         [
             T.Lambda(lambda img: img.convert("RGB") if img.mode != "RGB" else img),
@@ -60,15 +60,15 @@ def build_transform(input_size: int = 448) -> T.Compose:
 
 
 def to_model_tensor(img: Image.Image, input_size: int = 448) -> torch.Tensor:
-    """将 PIL.Image 转换为模型输入张量 (1, C, H, W)。"""
+    """Convert PIL.Image to model input tensor (1, C, H, W)."""
     transform = build_transform(input_size)
     return transform(img).unsqueeze(0)
 
 
-# ------------------------ 模型常驻服务 ------------------------
+# ------------------------ Persistent Model Service ------------------------
 
 class ModelServer:
-    """ArtiMuse 模型服务：统一暴露打分与评语接口。"""
+    """ArtiMuse model service: unify scoring and commenting interfaces."""
 
     def __init__(self, ckpt_dir: str, device: str) -> None:
         LOGGER.info("Loading model from %s on %s", ckpt_dir, device)
@@ -91,18 +91,18 @@ class ModelServer:
             "do_sample": False,
             "pad_token_id": self.tokenizer.eos_token_id,
         }
-        # 0..100 的权重用于 softmax 后的期望值
+        # Weights 0..100 for expectation over softmax
         self._weights = torch.arange(0, 101, dtype=torch.float32, device=device)
 
     def _score_questions(self, questions: List[str], pixel_values: torch.Tensor) -> List[float]:
-        """批量打分：输入一组问题，输出 [0,100] 浮点分数列表。"""
+        """Batch scoring: map prompts to float scores in [0, 100]."""
         assert pixel_values.ndim == 4 and pixel_values.size(0) == 1
 
         num_q = len(questions)
         num_patches_list = [pixel_values.size(0)] * num_q
         pixel_values_batch = torch.cat((pixel_values,) * num_q, dim=0)
 
-        # 构建 queries
+        # Build queries
         queries: List[str] = []
         img_ctx_id = self.tokenizer.convert_tokens_to_ids("<IMG_CONTEXT>")
         self.model.img_context_token_id = img_ctx_id
@@ -119,7 +119,7 @@ class ModelServer:
             query = query.replace("<image>", image_tokens, 1)
             queries.append(query)
 
-        # 批量 tokenization
+        # Batched tokenization
         self.tokenizer.padding_side = "left"
         model_inputs = self.tokenizer(queries, return_tensors="pt", padding=True)
         input_ids = model_inputs["input_ids"].to(self.device)
@@ -145,10 +145,10 @@ class ModelServer:
         return [float(s) for s in scores]
 
     def score_and_comment(self, img: Image.Image) -> Tuple[Dict[str, float], float, Dict[str, str]]:
-        """对图像进行 7 维度打分与评语，并返回总分。"""
+        """Score an image on 7 dimensions and return total score and comments."""
         pixel_values = to_model_tensor(img).to(torch.bfloat16).to(self.device)
 
-        # 7 维度分数（重用数字→字母映射提示，输出 2 字母）
+        # 7-dim scores (reuse numeric→letter mapping prompt, output 2 letters)
         base_suffix = (
             "Rate the score of the image in 0-100. In the output format, numbers are replaced by 2 corresponding "
             "letters with mapping: 0-aa ... 100-ey. The answer only outputs 2 corresponding letters."
@@ -157,11 +157,11 @@ class ModelServer:
         aspect_scores_list = self._score_questions(questions, pixel_values)
         aspect_scores = {n: float(v) for n, v in zip(AESTHETIC_DIMENSIONS, aspect_scores_list)}
 
-        # 总分使用官方 score 接口
+        # Total score via model's native score interface
         gen_cfg = dict(self.generation_config)
         total_score = float(self.model.score(self.device, self.tokenizer, pixel_values, gen_cfg))
 
-        # 维度评语（批量）
+        # Per-dimension comments (batched)
         prompts = [
             f"Please evaluate the aesthetic quality of this image from the aspect of {name}."
             for name in AESTHETIC_DIMENSIONS
@@ -178,4 +178,3 @@ class ModelServer:
         )
         aspect_comments = {n: c for n, c in zip(AESTHETIC_DIMENSIONS, comments)}
         return aspect_scores, total_score, aspect_comments
-

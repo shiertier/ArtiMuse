@@ -1,12 +1,13 @@
 """
 FastAPI demo API for ArtiMuse.
 
-功能：
-- 常驻加载模型，提供图像审美 7 维度打分、总分与评语的 HTTP 接口。
+Features:
+- Persistent model service with HTTP endpoints for 7-dimension scores,
+  total score, and per-dimension comments.
 
-注意：
-- 日志必须使用英文；代码注释使用中文。
-- 禁止函数内 import；避免不必要的 try/except。
+Notes:
+- Logging is English; comments are English.
+- No in-function imports; avoid unnecessary try/except blocks.
 """
 
 from __future__ import annotations
@@ -26,7 +27,7 @@ from src.demo_utils.model_server import (
 )
 
 
-# ------------------------ 常量与全局 ------------------------
+# ------------------------ Constants ------------------------
 DEFAULT_CHECKPOINT: str = os.environ.get("ARTIMUSE_CKPT", "checkpoints/ArtiMuse")
 DEFAULT_DEVICE: str = os.environ.get("ARTIMUSE_DEVICE", "cuda:0")
 
@@ -34,10 +35,10 @@ logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger("demo_api")
 
 
-# 无需本地 ModelServer 与预处理，直接复用抽象
+# No local ModelServer or preprocessing needed here; reuse the shared abstraction
 
 
-# ------------------------ FastAPI 应用 ------------------------
+# ------------------------ FastAPI App ------------------------
 
 APP = FastAPI(title="ArtiMuse Demo API", version="1.0.0")
 SERVER = ModelServer(ckpt_dir=DEFAULT_CHECKPOINT, device=DEFAULT_DEVICE)
@@ -45,13 +46,13 @@ SERVER = ModelServer(ckpt_dir=DEFAULT_CHECKPOINT, device=DEFAULT_DEVICE)
 
 @APP.get("/health")
 def health() -> Dict[str, str]:
-    """健康检查。"""
+    """Health check endpoint."""
     return {"status": "ok"}
 
 
 @APP.get("/meta")
 def meta() -> Dict[str, str | List[str]]:
-    """返回元信息：维度名称、设备与检查点。"""
+    """Return meta info: dimensions, device, checkpoint."""
     return {
         "dimensions": AESTHETIC_DIMENSIONS,
         "device": DEFAULT_DEVICE,
@@ -61,7 +62,7 @@ def meta() -> Dict[str, str | List[str]]:
 
 @APP.post("/infer")
 def infer(file: UploadFile = File(...)) -> JSONResponse:
-    """推理接口：上传图片，返回分数与评语。"""
+    """Inference endpoint: upload an image and get scores and comments."""
     content = file.file.read()
     img = Image.open(io.BytesIO(content)).convert("RGB")
     aspect_scores, total_score, aspect_comments = SERVER.score_and_comment(img)
@@ -74,7 +75,7 @@ def infer(file: UploadFile = File(...)) -> JSONResponse:
 
 
 def main() -> None:
-    """启动 Uvicorn 服务。"""
+    """Launch Uvicorn service."""
     uvicorn.run(APP, host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
 
 

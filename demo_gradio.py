@@ -1,15 +1,15 @@
 """
 Gradio demo for ArtiMuse.
 
-功能：
-- 允许上传图像，进行推理。
-- 输出 7 个维度的分数、总分数，以及每个维度的评语。
-- 使用雷达图（蜘蛛网图）美观展示 7 维度分数（0-100，间隔 10）。
-- 支持连续多次推理，模型常驻内存。
+Features:
+- Upload an image and run inference.
+- Display 7-dimension scores, total score, and per-dimension comments.
+- Render a radar chart (0–100 radius, grid every 10).
+- Support multiple inferences with a resident model instance.
 
-注意：
-- 日志必须使用英文；代码注释使用中文。
-- 禁止函数内 import；避免不必要的 try/except。
+Notes:
+- Logging is English; comments are English.
+- No in-function imports; avoid unnecessary try/except blocks.
 """
 
 from __future__ import annotations
@@ -29,7 +29,7 @@ from src.demo_utils.model_server import (
 )
 
 
-# ------------------------ 常量与全局 ------------------------
+# ------------------------ Constants ------------------------
 
 DEFAULT_CHECKPOINT: str = os.environ.get("ARTIMUSE_CKPT", "checkpoints/ArtiMuse")
 DEFAULT_DEVICE: str = os.environ.get("ARTIMUSE_DEVICE", "cuda:0")
@@ -38,20 +38,20 @@ logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger("demo_gradio")
 
 
-# 引入以声明依赖（打包工具可据此收集）
+# Import solely to declare dependency for packagers
 from src.demo_utils.model_server import to_model_tensor  # noqa: F401
 
 
-# ------------------------ 可视化：雷达图 ------------------------
+# ------------------------ Visualization: Radar Chart ------------------------
 
 def _radar_figure(aspect_scores: Dict[str, float]) -> plt.Figure:
-    """绘制 7 维度雷达图，半径 0~100，每 10 一根网格线。"""
+    """Draw a 7-dimension radar chart (0–100, grid step 10)."""
     labels = list(aspect_scores.keys())
     values = [aspect_scores[k] for k in labels]
 
     num_vars = len(labels)
     angles = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
-    # 闭合多边形
+    # Close the polygon
     values += values[:1]
     angles += angles[:1]
 
@@ -60,48 +60,48 @@ def _radar_figure(aspect_scores: Dict[str, float]) -> plt.Figure:
     ax.set_theta_offset(np.pi / 2)
     ax.set_theta_direction(-1)
 
-    # 网格与坐标
+    # Grid and axes
     grid_vals = list(range(0, 101, 10))
     ax.set_rgrids(grid_vals, angle=0, color="#AAAAAA", alpha=0.5, fontsize=8)
     ax.set_ylim(0, 100)
 
-    # 轴标签
+    # Axis labels
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(labels, fontsize=10)
     for label, angle in zip(ax.get_xticklabels(), angles):
         label.set_horizontalalignment("center")
 
-    # 多边形
+    # Polygon
     ax.plot(angles, values, color="#6C63FF", linewidth=2)
     ax.fill(angles, values, color="#6C63FF", alpha=0.25)
 
-    # 美化
+    # Styling
     ax.spines["polar"].set_visible(False)
     ax.grid(True, linestyle=":", linewidth=0.6)
     ax.set_facecolor("#FAFAFA")
     return fig
 
 
-# ------------------------ Gradio 回调 ------------------------
+# ------------------------ Gradio Handlers ------------------------
 
 SERVER = ModelServer(ckpt_dir=DEFAULT_CHECKPOINT, device=DEFAULT_DEVICE)
 
 
 def _run_infer(image: Image.Image) -> Tuple[plt.Figure, str, str]:
-    """Gradio 处理函数：返回雷达图、分数汇总文本、评语文本。"""
+    """Gradio handler: return radar chart, score summary, and comments."""
     if image is None:
         raise ValueError("No image provided.")
 
     aspect_scores, total_score, aspect_comments = SERVER.score_and_comment(image)
     fig = _radar_figure(aspect_scores)
 
-    # 分数文本
+    # Score text
     score_lines = [f"Total Score: {total_score:.1f}"]
     for k in AESTHETIC_DIMENSIONS:
         score_lines.append(f"{k}: {aspect_scores[k]:.1f}")
     score_text = "\n".join(score_lines)
 
-    # 评语文本
+    # Comments text
     comment_lines: List[str] = []
     for k in AESTHETIC_DIMENSIONS:
         comment_lines.append(f"[{k}]\n{aspect_comments[k]}\n")
@@ -110,7 +110,7 @@ def _run_infer(image: Image.Image) -> Tuple[plt.Figure, str, str]:
 
 
 def launch() -> None:
-    """启动 Gradio 界面。"""
+    """Launch Gradio UI."""
     css = """
     .gradio-container {max-width: 1200px}
     .score-box textarea {font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
