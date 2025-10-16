@@ -115,34 +115,45 @@ def _run_infer(image: Image.Image) -> Tuple[plt.Figure, str, List[List[str]]]:
 
 
 def launch(server_name: str, server_port: int) -> None:
-    """Launch Gradio UI with centered layout."""
+    """Launch Gradio UI with centered layout and fixed heights."""
     css = """
     .gradio-container {
-        max-width: 1400px;
+        max-width: 1200px;
         margin: 0 auto;
     }
     .header-section {
         text-align: center;
         margin-bottom: 30px;
     }
-    .top-section {
+    /* Top section: ensure equal heights and alignment */
+    .top-row {
         display: flex;
         justify-content: center;
         gap: 40px;
         margin-bottom: 40px;
     }
     .image-column {
-        flex: 0 0 auto;
+        flex: 0 0 450px;
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: flex-start;
     }
     .chart-column {
-        flex: 0 0 auto;
+        flex: 0 0 450px;
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: flex-start;
         gap: 20px;
+    }
+    /* Fixed height for plot container */
+    .plot-container {
+        width: 100%;
+        height: 450px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .total-score-box {
         text-align: center;
@@ -152,35 +163,13 @@ def launch(server_name: str, server_port: int) -> None:
         border-radius: 10px;
         font-size: 28px;
         font-weight: bold;
-        min-width: 300px;
-    }
-    .comments-section {
         width: 100%;
-        margin-top: 20px;
+        box-sizing: border-box;
     }
-    .dimension-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
-        margin-bottom: 30px;
-    }
-    .dimension-card {
-        background: #f8f9fa;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        padding: 15px;
-        text-align: center;
-    }
-    .dimension-title {
-        font-weight: bold;
-        color: #6C63FF;
-        font-size: 16px;
-        margin-bottom: 8px;
-    }
-    .dimension-score {
-        font-size: 24px;
-        font-weight: bold;
-        color: #667eea;
+    /* Comments table section */
+    .comments-section {
+        width: 900px;
+        margin: 0 auto;
     }
     """
 
@@ -196,67 +185,38 @@ def launch(server_name: str, server_port: int) -> None:
         )
 
         # Top section: Image input (left) + Chart + Total Score (right)
-        with gr.Row():
+        # Using HTML wrapper to ensure proper alignment
+        with gr.Row(elem_classes=["top-row"]):
             # Left: Image input
-            with gr.Column(scale=0, min_width=450):
+            with gr.Column(scale=0, min_width=450, elem_classes=["image-column"]):
                 gr.Markdown("### Input Image")
                 image_in = gr.Image(type="pil", label="", height=450)
                 run_btn = gr.Button("🚀 Run Inference", variant="primary", size="lg", scale=1)
 
             # Right: Chart and Total Score
-            with gr.Column(scale=0, min_width=500):
+            with gr.Column(scale=0, min_width=450, elem_classes=["chart-column"]):
                 gr.Markdown("### Aesthetic Evaluation")
-                fig_out = gr.Plot(label="", show_label=False)
+                # Wrap plot in a container with fixed height
+                with gr.Group(elem_classes=["plot-container"]):
+                    fig_out = gr.Plot(label="", show_label=False)
                 total_score_out = gr.Markdown(
                     value="Total Score: --/100",
                     elem_classes=["total-score-box"]
                 )
 
-        # Bottom section: Dimension cards and detailed comments table
-        gr.Markdown("### Detailed Evaluation by Dimension")
-
-        # Dimension cards (7 cards in a grid)
-        with gr.Group():
-            dimension_cards = []
-            with gr.Row():
-                for dim in AESTHETIC_DIMENSIONS:
-                    with gr.Column(scale=1, min_width=150):
-                        card = gr.Markdown(
-                            value=f"""
-                            <div class="dimension-card">
-                                <div class="dimension-title">{dim}</div>
-                                <div class="dimension-score">--</div>
-                            </div>
-                            """,
-                            elem_classes=["dimension-card"]
-                        )
-                        dimension_cards.append(card)
-
-        # Detailed comments table
-        gr.Markdown("### Comments")
-        comments_table = gr.Dataframe(
-            headers=["Dimension", "Score", "Comment"],
-            label="",
-            interactive=False,
-            wrap=True,
-        )
+        # Bottom section: Comments table (centered and same width as top section)
+        gr.Markdown("### Detailed Evaluation")
+        with gr.Group(elem_classes=["comments-section"]):
+            comments_table = gr.Dataframe(
+                headers=["Dimension", "Score", "Comment"],
+                label="",
+                interactive=False,
+                wrap=True,
+            )
 
         # Connect inference button
         def _run_infer_wrapper(image):
             fig, total_score_text, comments_data = _run_infer(image)
-
-            # Prepare dimension cards markdown
-            dimension_markdowns = []
-            for i, dim in enumerate(AESTHETIC_DIMENSIONS):
-                score = comments_data[i][1]
-                dimension_markdowns.append(
-                    f"""
-                    <div class="dimension-card">
-                        <div class="dimension-title">{dim}</div>
-                        <div class="dimension-score">{score}</div>
-                    </div>
-                    """
-                )
 
             # Prepare total score markdown
             total_score_md = f"""
@@ -265,13 +225,13 @@ def launch(server_name: str, server_port: int) -> None:
             </div>
             """
 
-            # Return: fig, total_score_md, dimension_cards, comments_table
-            return [fig, total_score_md] + dimension_markdowns + [comments_data]
+            # Return: fig, total_score_md, comments_table
+            return [fig, total_score_md, comments_data]
 
         run_btn.click(
             _run_infer_wrapper,
             inputs=[image_in],
-            outputs=[fig_out, total_score_out] + dimension_cards + [comments_table]
+            outputs=[fig_out, total_score_out, comments_table]
         )
 
     demo.queue(max_size=2).launch(server_name=server_name, server_port=server_port)
