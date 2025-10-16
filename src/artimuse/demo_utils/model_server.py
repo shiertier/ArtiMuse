@@ -178,3 +178,4 @@ class ModelServer:
         )
         aspect_comments = {n: c for n, c in zip(AESTHETIC_DIMENSIONS, comments)}
         return aspect_scores, total_score, aspect_comments
+

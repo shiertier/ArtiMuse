@@ -22,7 +22,7 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 from PIL import Image
 
-from demo_utils.model_server import (
+from artimuse.demo_utils.model_server import (
     ModelServer,
     AESTHETIC_DIMENSIONS,
 )

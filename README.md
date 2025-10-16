@@ -185,12 +185,18 @@ python src/eval/eval_dataset.py \
 
 ## 🧪 Demos
 
+First, install the package locally so imports resolve cleanly:
+
+```
+pip install -e .
+```
+
 - Gradio UI (image upload + 7-dim radar chart + comments)
-  - Install extras: `pip install -r requirements_gradio.txt`
+  - Install extras: `pip install -r requirements_gradio.txt` (or `pip install .[gradio]`)
   - Run: `python src/demo_gradio.py --host 0.0.0.0 --port 7860`
 
 - FastAPI Service (persistent model, HTTP inference)
-  - Install extras: `pip install -r requirements_api.txt`
+  - Install extras: `pip install -r requirements_api.txt` (or `pip install .[api]`)
   - Run: `python src/demo_api.py --host 0.0.0.0 --port 8000`
   - Endpoints: `GET /health`, `GET /meta`, `POST /infer` (form field `file`)
 

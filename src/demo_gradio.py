@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
-from demo_utils.model_server import (
+from artimuse.demo_utils.model_server import (
     ModelServer,
     AESTHETIC_DIMENSIONS,
 )
@@ -40,7 +40,7 @@ LOGGER = logging.getLogger("demo_gradio")
 
 
 # Import solely to declare dependency for packagers
-from demo_utils.model_server import to_model_tensor  # noqa: F401
+from artimuse.demo_utils.model_server import to_model_tensor  # noqa: F401
 
 
 # ------------------------ Visualization: Radar Chart ------------------------
