@@ -18,6 +18,7 @@ import os
 import logging
 from typing import Dict, List, Tuple
 import argparse
+import io
 
 import gradio as gr
 import matplotlib.pyplot as plt
@@ -90,28 +91,40 @@ def _radar_figure(aspect_scores: Dict[str, float]) -> plt.Figure:
     return fig
 
 
+def _figure_to_pil(fig: plt.Figure) -> Image.Image:
+    """Convert a Matplotlib Figure to a PIL Image."""
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", bbox_inches="tight")
+    plt.close(fig)
+    buf.seek(0)
+    img = Image.open(buf).convert("RGB")
+    buf.close()
+    return img
+
+
 # ------------------------ Gradio Handlers ------------------------
 
 SERVER = ModelServer(ckpt_dir=DEFAULT_CHECKPOINT, device=DEFAULT_DEVICE)
 
 
-def _run_infer(image: Image.Image) -> Tuple[plt.Figure, str, List[List[str]]]:
-    """Gradio handler: return radar chart, total score, and per-dimension comments table."""
+def _run_infer(image: Image.Image) -> Tuple[Image.Image, str, List[List[str]]]:
+    """Gradio handler: return radar chart (as image), total score, and per-dimension comments table."""
     if image is None:
         raise ValueError("No image provided.")
 
     aspect_scores, total_score, aspect_comments = SERVER.score_and_comment(image)
     fig = _radar_figure(aspect_scores)
+    chart_img = _figure_to_pil(fig)
 
     # Total score text (centered, large)
     total_score_text = f"Total Score: {total_score:.1f}/100"
 
     # Comments table: each row is [dimension, score, comment]
-    comments_table = []
+    comments_table: List[List[str]] = []
     for k in AESTHETIC_DIMENSIONS:
         comments_table.append([k, f"{aspect_scores[k]:.1f}", aspect_comments[k]])
 
-    return fig, total_score_text, comments_table
+    return chart_img, total_score_text, comments_table
 
 
 def launch(server_name: str, server_port: int) -> None:
@@ -192,7 +205,7 @@ def launch(server_name: str, server_port: int) -> None:
             # Right: Chart and Total Score
             with gr.Column(scale=0, min_width=450, elem_classes=["chart-column"]):
                 gr.Markdown("### Aesthetic Evaluation")
-                fig_out = gr.Plot(label="", show_label=False)
+                fig_out = gr.Image(type="pil", label="", show_label=False, height=450)
                 total_score_out = gr.Markdown(
                     value="Total Score: --/100",
                     elem_classes=["total-score-box"]
@@ -202,6 +215,8 @@ def launch(server_name: str, server_port: int) -> None:
         gr.Markdown("### Detailed Evaluation")
         comments_table = gr.Dataframe(
             headers=["Dimension", "Score", "Comment"],
+            datatype=["str", "str", "str"],
+            col_count=(3, "fixed"),
             label="",
             interactive=False,
             elem_classes=["comments-section"]
