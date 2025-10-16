@@ -127,33 +127,30 @@ def launch(server_name: str, server_port: int) -> None:
     }
     /* Top section: ensure equal heights and alignment */
     .top-row {
-        display: flex;
-        justify-content: center;
-        gap: 40px;
-        margin-bottom: 40px;
+        display: flex !important;
+        justify-content: center !important;
+        gap: 40px !important;
+        margin-bottom: 40px !important;
     }
     .image-column {
-        flex: 0 0 450px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
+        flex: 0 0 450px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
     }
     .chart-column {
-        flex: 0 0 450px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 20px;
+        flex: 0 0 450px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 20px !important;
     }
-    /* Fixed height for plot container */
-    .plot-container {
-        width: 100%;
-        height: 450px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    /* Fix plot height */
+    .chart-column .gradio-plot {
+        height: 450px !important;
+        min-height: 450px !important;
     }
     .total-score-box {
         text-align: center;
@@ -168,8 +165,8 @@ def launch(server_name: str, server_port: int) -> None:
     }
     /* Comments table section */
     .comments-section {
-        width: 900px;
-        margin: 0 auto;
+        width: 900px !important;
+        margin: 0 auto !important;
     }
     """
 
@@ -185,7 +182,6 @@ def launch(server_name: str, server_port: int) -> None:
         )
 
         # Top section: Image input (left) + Chart + Total Score (right)
-        # Using HTML wrapper to ensure proper alignment
         with gr.Row(elem_classes=["top-row"]):
             # Left: Image input
             with gr.Column(scale=0, min_width=450, elem_classes=["image-column"]):
@@ -196,9 +192,7 @@ def launch(server_name: str, server_port: int) -> None:
             # Right: Chart and Total Score
             with gr.Column(scale=0, min_width=450, elem_classes=["chart-column"]):
                 gr.Markdown("### Aesthetic Evaluation")
-                # Wrap plot in a container with fixed height
-                with gr.Group(elem_classes=["plot-container"]):
-                    fig_out = gr.Plot(label="", show_label=False)
+                fig_out = gr.Plot(label="", show_label=False)
                 total_score_out = gr.Markdown(
                     value="Total Score: --/100",
                     elem_classes=["total-score-box"]
@@ -206,13 +200,13 @@ def launch(server_name: str, server_port: int) -> None:
 
         # Bottom section: Comments table (centered and same width as top section)
         gr.Markdown("### Detailed Evaluation")
-        with gr.Group(elem_classes=["comments-section"]):
-            comments_table = gr.Dataframe(
-                headers=["Dimension", "Score", "Comment"],
-                label="",
-                interactive=False,
-                wrap=True,
-            )
+        comments_table = gr.Dataframe(
+            headers=["Dimension", "Score", "Comment"],
+            label="",
+            interactive=False,
+            wrap=True,
+            elem_classes=["comments-section"]
+        )
 
         # Connect inference button
         def _run_infer_wrapper(image):
