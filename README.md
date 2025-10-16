@@ -185,24 +185,180 @@ python src/eval/eval_dataset.py \
 
 ## 🧪 Demos
 
+### Installation
+
 First, install the package locally so imports resolve cleanly:
 
-```
+```bash
 pip install -e .
 ```
 
-- Gradio UI (image upload + 7-dim radar chart + comments)
-  - Install extras: `pip install -r requirements_gradio.txt` (or `pip install .[gradio]`)
-  - Run: `python src/demo_gradio.py --host 0.0.0.0 --port 7860`
+This will install ArtiMuse in editable mode, making the `artimuse` package importable from anywhere in your Python environment.
 
-- FastAPI Service (persistent model, HTTP inference)
-  - Install extras: `pip install -r requirements_api.txt` (or `pip install .[api]`)
-  - Run: `python src/demo_api.py --host 0.0.0.0 --port 8000`
-  - Endpoints: `GET /health`, `GET /meta`, `POST /infer` (form field `file`)
+### Project Structure
 
-Environment variables (optional):
-- `ARTIMUSE_CKPT` path to checkpoint (default `checkpoints/ArtiMuse`)
-- `ARTIMUSE_DEVICE` device string (default `cuda:0`)
+The package is organized as follows:
+
+```
+ArtiMuse/
+├── src/
+│   ├── artimuse/                    # Main package
+│   │   ├── demo_utils/              # Shared demo utilities
+│   │   │   └── model_server.py      # Persistent model service
+│   │   └── internvl/                # InternVL model components
+│   │       ├── conversation.py
+│   │       └── model/
+│   │           ├── internvl_chat/   # ArtiMuse model
+│   │           ├── internlm2/       # InternLM2 components
+│   │           └── phi3/            # Phi3 components
+│   ├── eval/                        # Evaluation scripts
+│   │   ├── eval_image.py
+│   │   └── eval_dataset.py
+│   └── demo_utils/                  # Additional demo utilities
+├── demo_gradio.py                   # Gradio UI entry point
+├── demo_api.py                      # FastAPI entry point
+└── checkpoints/                     # Model checkpoints directory
+```
+
+### Usage Methods
+
+#### Method 1: Gradio UI (Recommended for Interactive Use)
+
+Interactive web interface with image upload, 7-dimensional radar chart, and aesthetic comments.
+
+**Installation:**
+```bash
+pip install -r requirements_gradio.txt
+# or
+pip install .[gradio]
+```
+
+**Run:**
+```bash
+python demo_gradio.py --host 0.0.0.0 --port 7860
+```
+
+Then open your browser to `http://localhost:7860`
+
+**Options:**
+- `--host`: Server host (default: `0.0.0.0`)
+- `--port`: Server port (default: `7860`)
+
+**Environment variables (optional):**
+- `ARTIMUSE_CKPT`: Path to checkpoint (default: `checkpoints/ArtiMuse`)
+- `ARTIMUSE_DEVICE`: Device string (default: `cuda:0`)
+
+---
+
+#### Method 2: FastAPI Service (Recommended for Production)
+
+RESTful API service with persistent model loading for efficient batch inference.
+
+**Installation:**
+```bash
+pip install -r requirements_api.txt
+# or
+pip install .[api]
+```
+
+**Run:**
+```bash
+python demo_api.py --host 0.0.0.0 --port 8000
+```
+
+**API Endpoints:**
+
+- `GET /health` - Health check
+  ```bash
+  curl http://localhost:8000/health
+  ```
+
+- `GET /meta` - Get model metadata (dimensions, device, checkpoint)
+  ```bash
+  curl http://localhost:8000/meta
+  ```
+
+- `POST /infer` - Run inference on an image
+  ```bash
+  curl -X POST -F "file=@image.jpg" http://localhost:8000/infer
+  ```
+
+  **Response:**
+  ```json
+  {
+    "total_score": 75.5,
+    "aspect_scores": {
+      "Composition & Design": 78.2,
+      "Visual Elements & Structure": 76.1,
+      "Technical Execution": 74.3,
+      "Originality & Creativity": 72.5,
+      "Theme & Communication": 75.8,
+      "Emotion & Viewer Response": 77.2,
+      "Overall Gestalt": 76.0
+    },
+    "aspect_comments": {
+      "Composition & Design": "The composition is well-balanced...",
+      ...
+    }
+  }
+  ```
+
+**Options:**
+- `--host`: Server host (default: `0.0.0.0`)
+- `--port`: Server port (default: `8000`)
+
+**Environment variables (optional):**
+- `ARTIMUSE_CKPT`: Path to checkpoint (default: `checkpoints/ArtiMuse`)
+- `ARTIMUSE_DEVICE`: Device string (default: `cuda:0`)
+
+---
+
+#### Method 3: Python API (For Custom Integration)
+
+Use the `ModelServer` class directly in your Python code for custom workflows.
+
+**Example:**
+```python
+from artimuse.demo_utils.model_server import ModelServer
+from PIL import Image
+
+# Initialize the model server
+server = ModelServer(
+    ckpt_dir="checkpoints/ArtiMuse",
+    device="cuda:0"
+)
+
+# Load and evaluate an image
+image = Image.open("path/to/image.jpg")
+aspect_scores, total_score, aspect_comments = server.score_and_comment(image)
+
+# Access results
+print(f"Total Score: {total_score}")
+for dimension, score in aspect_scores.items():
+    print(f"{dimension}: {score}")
+    print(f"Comment: {aspect_comments[dimension]}\n")
+```
+
+**Available Methods:**
+- `score_and_comment(img)` - Get 7-dimensional scores, total score, and comments
+  - Returns: `(aspect_scores: Dict[str, float], total_score: float, aspect_comments: Dict[str, str])`
+
+---
+
+### Configuration
+
+**Environment variables (optional):**
+- `ARTIMUSE_CKPT`: Path to checkpoint directory (default: `checkpoints/ArtiMuse`)
+- `ARTIMUSE_DEVICE`: CUDA device string (default: `cuda:0`)
+- `HOST`: Server host for demos (default: `0.0.0.0`)
+- `PORT`: Server port for demos (default: `7860` for Gradio, `8000` for FastAPI)
+
+**Example:**
+```bash
+export ARTIMUSE_CKPT=checkpoints/ArtiMuse_AVA
+export ARTIMUSE_DEVICE=cuda:1
+python demo_gradio.py
+```
 
 ## 🙏 Acknowledgements
 
